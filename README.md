@@ -1,22 +1,21 @@
-# Histogram Equalization Using OpenCV (Grayscale & Color Images)
+# Geometric Transformations Using OpenCV
+### Developed By: HASHINI R
 
+### Register No: 212224240055
 ---
 
 ## Aim
 
-To write a Python program using OpenCV to perform histogram equalization on both grayscale and color images to enhance image contrast and brightness.
+To write a Python program using OpenCV to perform various geometric transformations on an image.
 
 The program performs the following operations:
 
-- Read and display a grayscale image  
-- Plot histogram of the grayscale image  
-- Apply histogram equalization on grayscale image  
-- Read and display a color image  
-- Plot histogram of B, G, R channels  
-- Convert image to HSV color space  
-- Apply histogram equalization on the Value (V) channel  
-- Convert the enhanced image back to BGR format  
-- Display original and enhanced images with histograms  
+- Image Translation  
+- Image Scaling  
+- Image Shearing  
+- Image Reflection  
+- Image Rotation  
+- Image Cropping  
 
 ---
 
@@ -36,106 +35,149 @@ The program performs the following operations:
 Import the required libraries: OpenCV, NumPy, and Matplotlib.
 
 ### Step 2:
-Read the image `parrot.jpg` in grayscale format.
+Read the input image in color mode.
 
-### Step 3:
-Display the grayscale image and plot its histogram.
+### Step 3: Image Translation
+- Create a translation matrix to shift the image  
+- Move the image 100 pixels to the right and 50 pixels down  
+- Apply transformation using `cv2.warpAffine()`  
+- Display original and translated images  
 
-### Step 4:
-Apply histogram equalization using `cv2.equalizeHist()` to enhance contrast.
+### Step 4: Image Scaling
+- Resize the image using scaling factors:
+  - 5.0× in x direction  
+  - 2.0× in y direction  
+- Use `cv2.resize()`  
+- Display original and scaled images  
 
-### Step 5:
-Display original grayscale image, its histogram, enhanced image, and its histogram using a 2 × 2 grid.
+### Step 5: Image Shearing
+- Create shearing matrix  
+- Apply shearing transformation using `cv2.warpAffine()`  
+- Display original and sheared images  
 
-### Step 6:
-Read the same image in color format.
+### Step 6: Image Reflection
+- Perform image reflection using `cv2.flip()`  
+- Display reflected image  
 
-### Step 7:
-Split the image into B, G, R channels and plot their histograms.
+### Step 7: Image Rotation
+- Create rotation matrix for 45° rotation  
+- Use `cv2.getRotationMatrix2D()` and `cv2.warpAffine()`  
+- Display rotated image  
 
-### Step 8:
-Convert the image from BGR to HSV color space.
-
-### Step 9:
-Apply histogram equalization on the V (Value) channel.
-
-### Step 10:
-Merge the channels and convert the image back to BGR format.
-
-### Step 11:
-Display original color image, histogram, enhanced image, and enhanced histogram using a 2 × 2 grid.
+### Step 8: Image Cropping
+- Define crop coordinates and dimensions  
+- Extract selected image portion using array slicing  
+- Display cropped image  
 
 ---
 
 ## Program
-# Developed By: HASHINI.R
-# Register Number: 212224240055
 
+### Developed By: GAYATHRI S
+
+### Register No: 212224230073
+
+```
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-image = cv2.imread('iron.jpg')
+# Step 1: Load the image
+image = cv2.imread('Qn4.jpg')
 
-gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-hist_original = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
-
-equalized_image = cv2.equalizeHist(gray_image)
-
-hist_equalized = cv2.calcHist([equalized_image], [0], None, [256], [0, 256])
-
-plt.figure(figsize=(10, 7))
-
-plt.subplot(2, 2, 1)
-plt.imshow(gray_image, cmap='gray')
-plt.title('Original Grayscale Image')
+# Display original image
+plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+plt.title("Original Image")
 plt.axis('off')
 
-plt.subplot(2, 2, 2)
-plt.imshow(equalized_image, cmap='gray')
-plt.title('Equalized Image')
+# Step 2: Image Translation
+tx, ty = 100, 50
+M_translation = np.float32([[1, 0, tx], [0, 1, ty]])
+translated_image = cv2.warpAffine(image, M_translation, (image.shape[1], image.shape[0]))
+
+plt.imshow(cv2.cvtColor(translated_image, cv2.COLOR_BGR2RGB))
+plt.title("Translated Image")
 plt.axis('off')
 
-plt.subplot(2, 2, 3)
-plt.plot(hist_original, color='black')
-plt.title('Original Histogram')
-plt.xlim([0, 256])
+# Step 3: Image Scaling
+fx, fy = 5.0, 2.0
+scaled_image = cv2.resize(image, None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
 
+plt.imshow(cv2.cvtColor(scaled_image, cv2.COLOR_BGR2RGB))
+plt.title("Scaled Image")
+plt.axis('off')
 
+# Step 4: Image Shearing
+shear_matrix = np.float32([[1, 0.5, 0], [0.5, 1, 0]])
+sheared_image = cv2.warpAffine(image, shear_matrix, (image.shape[1], image.shape[0]))
 
-plt.subplot(2, 2, 4)
-plt.plot(hist_equalized, color='black')
-plt.title('Equalized Histogram')
-plt.xlim([0, 256])
+plt.imshow(cv2.cvtColor(sheared_image, cv2.COLOR_BGR2RGB))
+plt.title("Sheared Image")
+plt.axis('off')
 
-plt.tight_layout()
-plt.show()
+# Step 5: Image Reflection
+reflected_image = cv2.flip(image, 2)
 
+plt.imshow(cv2.cvtColor(reflected_image, cv2.COLOR_BGR2RGB))
+plt.title("Reflected Image")
+plt.axis('off')
 
+# Step 6: Image Rotation
+(height, width) = image.shape[:2]
+angle = 45
+center = (width // 2, height // 2)
+M_rotation = cv2.getRotationMatrix2D(center, angle, 1)
+rotated_image = cv2.warpAffine(image, M_rotation, (width, height))
 
+plt.imshow(cv2.cvtColor(rotated_image, cv2.COLOR_BGR2RGB))
+plt.title("Rotated Image")
+plt.axis('off')
+
+# Step 7: Image Cropping
+x, y, w, h = 100, 100, 200, 150
+cropped_image = image[y:y+h, x:x+w]
+
+plt.imshow(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
+plt.title("Cropped Image")
+plt.axis('off')
+```
 
 ---
 
-##  Output
-<img width="1424" height="873" alt="image" src="https://github.com/user-attachments/assets/581197fa-b3fe-4f25-b0f4-4060ab8ac021" />
+## Output
 
-### Grayscale Histogram Equalization
+### Image Translation
 
-- Original grayscale image is displayed  
-- Histogram of original grayscale image is plotted  
-- Enhanced image after histogram equalization is displayed  
-- Histogram of enhanced grayscale image shows improved contrast  
+<img width="515" height="381" alt="image" src="https://github.com/user-attachments/assets/86e5a1f2-6597-4e21-ad35-be55c3939382" />
 
-### Color Image Histogram Equalization
 
-- Original color image is displayed  
-- Histogram of B, G, R channels is plotted  
-- Enhanced image after HSV-based equalization is displayed  
-- Histogram of enhanced image shows better intensity distribution  
+### Image Scaling
+ 
+<img width="515" height="176" alt="image" src="https://github.com/user-attachments/assets/06d22df5-99d8-49cf-bce8-279c88a96da1" />
+
+
+### Image Shearing
+
+<img width="515" height="381" alt="image" src="https://github.com/user-attachments/assets/54c86c9e-eec5-47a1-9415-4df2fefe45d1" />
+
+
+### Image Reflection
+  
+<img width="515" height="381" alt="image" src="https://github.com/user-attachments/assets/2780f744-4e06-42c8-bf04-41788e8a60bc" />
+
+
+### Image Rotation
+
+<img width="515" height="381" alt="image" src="https://github.com/user-attachments/assets/6a5bfb65-bc61-45b0-8586-279b0602c893" />
+
+
+### Image Cropping
+
+ <img width="512" height="409" alt="image" src="https://github.com/user-attachments/assets/925e928c-339e-4580-b3a8-dbb0b060c3c5" />
+
 
 ---
 
 ## Result
 
-Thus, histogram equalization is successfully performed on both grayscale and color images using OpenCV. The contrast and brightness of the images are significantly improved, enhancing visual quality and feature visibility.
+Thus, various geometric transformations such as translation, scaling, shearing, reflection, rotation, and cropping are successfully performed using OpenCV.
