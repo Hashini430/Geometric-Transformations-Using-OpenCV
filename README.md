@@ -73,9 +73,7 @@ Read the input image in color mode.
 
 ## Program
 
-### Developed By: GAYATHRI S
 
-### Register No: 212224230073
 
 ```
 import cv2
